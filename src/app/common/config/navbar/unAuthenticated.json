@@ -1,0 +1,17 @@
+[
+    {
+        "path": "/",
+        "label": "Home",
+        "role": ""
+    },
+    {
+        "path": "/login",
+        "label": "Login",
+        "role": ""
+    },
+    {
+        "path": "/register",
+        "label": "Register",
+        "role": ""
+    }
+]

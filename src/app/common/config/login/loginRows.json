@@ -1,0 +1,14 @@
+[
+    {
+        "label": "UserName: ",
+        "name": "username",
+        "inputType": "text",
+        "placeHolder": "Enter Username"
+    },
+    {
+        "label": "Password: ",
+        "name": "password",
+        "inputType": "password",
+        "placeHolder": "Enter Password"
+    }
+]
