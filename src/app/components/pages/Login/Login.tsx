@@ -9,13 +9,21 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { ILoginProps } from './Login.model';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { EMAIL, PASSWORD } from './consts';
 
 const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    height: '100%',
+    alignItems: 'center',
+  },
   paper: {
-    marginTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    height: '100%',
+    width: '100%',
+    justifyContent: 'center',
   },
   avatar: {
     margin: theme.spacing(1),
@@ -35,11 +43,14 @@ const Login: React.FC<ILoginProps> = ({
     onChange,
     userData,
     loading,
+    displayError,
+    emailErrorText,
+    passwordErrorText,
+    validationErrors,
 }) => {
   const classes = useStyles();
-
   return (
-    <Container component="main" maxWidth="xs">
+    <Container className={classes.container} component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
@@ -52,30 +63,32 @@ const Login: React.FC<ILoginProps> = ({
             onChange={e => onChange(e as FormEvent<HTMLInputElement>)}
             variant="outlined"
             margin="normal"
-            required
             fullWidth
-            id="email"
+            id={EMAIL}
             label="Email Address"
-            name="email"
-            autoComplete="email"
+            name={EMAIL}
+            autoComplete={EMAIL}
             autoFocus
             value={userData.email}
+            error={displayError('email')}
+            helperText={emailErrorText}
         />
         <TextField
             onChange={e => onChange(e as FormEvent<HTMLInputElement>)}
             variant="outlined"
             margin="normal"
-            required
             fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
+            name={PASSWORD}
+            label={PASSWORD}
+            type={PASSWORD}
+            id={PASSWORD}
             autoComplete="current-password"
             value={userData.password}
+            error={displayError('password')}
+            helperText={passwordErrorText}
         />
         <Button
-          disabled={loading}
+          disabled={loading || validationErrors.length > 0}
           onClick={onSubmit}
           type="submit"
           fullWidth
@@ -83,9 +96,10 @@ const Login: React.FC<ILoginProps> = ({
           color="primary"
           className={classes.submit}
         >
+          {console.log(loading, validationErrors)}
             Sign In
             {
-              loading && <CircularProgress style={{position: 'absolute'}} size={20} />
+              loading && validationErrors.length === 0 && <CircularProgress style={{position: 'absolute'}} size={20} />
             }
         </Button>
       </div>

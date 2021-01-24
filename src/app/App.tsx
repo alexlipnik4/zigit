@@ -7,7 +7,7 @@ import PrivateRoute from './common/hocs/PrivateRoute';
 import UnPrivateRoute from './common/hocs/UnPrivateRoute';
 
 import './App.scss';
-import Test from './components/pages/Test';
+import Info from './components/pages/Info/Info';
 import NotFoundPage from './components/pages/notFoundPage';
 
 function App() {
@@ -15,7 +15,7 @@ function App() {
     <div className="app">
       <Router>
         <Switch>
-          <PrivateRoute exact path="/" component={Test} />
+          <PrivateRoute exact path="/info" component={Info} />
           <UnPrivateRoute path="/login" component={Login} />
           <Route component={NotFoundPage} />
         </Switch>

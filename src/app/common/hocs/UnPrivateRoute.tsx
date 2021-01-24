@@ -1,10 +1,10 @@
 import Cookies from 'js-cookie';
-import React, {useContext} from 'react';
-import {Route, Redirect, Router} from 'react-router-dom';
-import {AuthContext} from '../context/AuthContext';
+import React from 'react';
+import {Route, Redirect} from 'react-router-dom';
 
 const UnPrivateRoute = ({component: Component, ...rest}: any) => {
     const isAuthenticated = Cookies.get('access_token');
+
     return (
         <Route 
             {...rest}
