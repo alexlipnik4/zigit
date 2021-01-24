@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { CellProps, Column, Row, useTable, useGlobalFilter, useAsyncDebounce, useFilters } from 'react-table';
+import { useSortBy, Column, Row, useTable, useGlobalFilter, useAsyncDebounce, useFilters } from 'react-table';
 import { UserData } from '../pages/Info/Info';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, Typography } from '@material-ui/core';
@@ -148,7 +148,8 @@ const DataTable: React.FC<DataTableProps> = ({ projectsData }) => {
       filterTypes,
     },
     useFilters,
-    useGlobalFilter
+    useGlobalFilter,
+    useSortBy,
   )
 
   return (
@@ -162,10 +163,17 @@ const DataTable: React.FC<DataTableProps> = ({ projectsData }) => {
             {headerGroup.headers.map(column => (
               <th
                 className={classes.headlineItem}
-                {...column.getHeaderProps()}
+                {...column.getHeaderProps(column.getSortByToggleProps())}
               >
                 <Typography variant="h6">
                   {column.render('Header')}
+                  <span>
+                    {column.isSorted
+                      ? column.isSortedDesc
+                        ? '🔼'
+                        : '🔽'
+                      : ''}
+                  </span>
                 </Typography>
               </th>
             ))}
