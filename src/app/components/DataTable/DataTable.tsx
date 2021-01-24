@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useSortBy, Column, Row, useTable, useGlobalFilter, useAsyncDebounce, useFilters } from 'react-table';
 import { UserData } from '../pages/Info/Info';
 import { makeStyles } from '@material-ui/core/styles';
@@ -81,7 +81,7 @@ const GlobalFilter = (props: GlobalFilterType) => {
   )
 }
 
-const DataTable: React.FC<DataTableProps> = ({ projectsData }) => {
+const DataTable: React.FC<DataTableProps> = ({ projectsData, setClearance, setAverage  }) => {
   const data = React.useMemo<UserData[]>(() => [...projectsData], []);
   const classes = useStyles();
 
@@ -118,7 +118,7 @@ const DataTable: React.FC<DataTableProps> = ({ projectsData }) => {
   const filterTypes = React.useMemo(
     () => ({
       text: (rows: Row<UserData>[], id: number, filterValue: any) => {
-        return rows.filter(row => {
+        const filter = rows.filter(row => {
           const rowValue = row.values[id]
           return rowValue !== undefined
             ? String(rowValue)
@@ -126,6 +126,8 @@ const DataTable: React.FC<DataTableProps> = ({ projectsData }) => {
                 .startsWith(String(filterValue).toLowerCase())
             : true
         })
+
+        return filter;
       },
     }),
     []
@@ -151,6 +153,22 @@ const DataTable: React.FC<DataTableProps> = ({ projectsData }) => {
     useGlobalFilter,
     useSortBy,
   )
+
+
+  useEffect(() => {
+    if(state.globalFilter){
+      let countScore = 0;
+      let countSuccessful = 0;
+      rows.forEach((item, i) => {
+        if (item.values.madeDadeline === 'true') {
+          countSuccessful++;
+        }
+        countScore += item.values.score;
+      })
+      setClearance(Math.round((countSuccessful / rows.length) * 100));
+      setAverage(Math.round(countScore / rows.length));
+    }
+  }, [state.globalFilter])
 
   return (
     <table

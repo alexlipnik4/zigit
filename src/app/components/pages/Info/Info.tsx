@@ -61,17 +61,11 @@ const Info = () => {
       <Card {...(LocalStorageService.getItem('signInData') as InfoCardProps)} />
 
       <div className={classes.statistics}>
-        <Typography variant="h5">{`Average score: ${clearance}`}</Typography>
-        <Typography variant="h5">{`Deadline clearance percentage: ${average}`}</Typography>
+        <Typography variant="h5">{`Average score: ${average}`}</Typography>
+        <Typography variant="h5">{`Deadline clearance percentage: ${clearance}`}</Typography>
       </div>
 
-      {data.length > 0 && (
-        <DataTable
-          projectsData={data}
-          setClearance={setClearance}
-          setAverage={setAverage}
-        />
-      )}
+      {data.length > 0 && <DataTable projectsData={data} setClearance={setClearance} setAverage={setAverage} />}
     </Container>
   );
 };
