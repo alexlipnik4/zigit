@@ -8,7 +8,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Hidden from '@material-ui/core/Hidden';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   card: {
     display: 'flex',
     width: '100%',
@@ -23,17 +23,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export type InfoCardProps = {
-    name: string;
-    joinedAt: string;
-    Team: string;
-    avatar: string;
-}
+  name: string;
+  joinedAt: string;
+  Team: string;
+  avatar: string;
+};
 
-const CardInfo:React.FC<InfoCardProps> = ({
-    name,
-    joinedAt,
-    Team,
-    avatar,
+const CardInfo: React.FC<InfoCardProps> = ({
+  name,
+  joinedAt,
+  Team,
+  avatar,
 }) => {
   const classes = useStyles();
 
@@ -61,6 +61,6 @@ const CardInfo:React.FC<InfoCardProps> = ({
       </CardActionArea>
     </Grid>
   );
-}
+};
 
-export default CardInfo; 
+export default CardInfo;

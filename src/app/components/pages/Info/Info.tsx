@@ -65,7 +65,13 @@ const Info = () => {
         <Typography variant="h5">{`Deadline clearance percentage: ${clearance}`}</Typography>
       </div>
 
-      {data.length > 0 && <DataTable projectsData={data} setClearance={setClearance} setAverage={setAverage} />}
+      {data.length > 0 && (
+        <DataTable
+          projectsData={data}
+          setClearance={setClearance}
+          setAverage={setAverage}
+        />
+      )}
     </Container>
   );
 };

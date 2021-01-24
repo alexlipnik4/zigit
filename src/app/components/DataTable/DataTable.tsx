@@ -1,5 +1,13 @@
 import React, { useEffect, useMemo } from 'react';
-import { useSortBy, Column, Row, useTable, useGlobalFilter, useAsyncDebounce, useFilters } from 'react-table';
+import {
+  useSortBy,
+  Column,
+  Row,
+  useTable,
+  useGlobalFilter,
+  useAsyncDebounce,
+  useFilters,
+} from 'react-table';
 import { UserData } from '../pages/Info/Info';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, Typography } from '@material-ui/core';
@@ -45,27 +53,27 @@ const useStyles = makeStyles(theme => ({
   cellContent: {
     display: 'flex',
     justifyContent: 'center',
-  }
+  },
 }));
 
 type GlobalFilterType = {
   preGlobalFilteredRows: Row<UserData>[];
   globalFilter: any;
   setGlobalFilter: any;
-}
+};
 
 const GlobalFilter = (props: GlobalFilterType) => {
-  const count = props.preGlobalFilteredRows.length
-  const [value, setValue] = React.useState(props.globalFilter)
+  const count = props.preGlobalFilteredRows.length;
+  const [value, setValue] = React.useState(props.globalFilter);
   const onChange = useAsyncDebounce(value => {
-    props.setGlobalFilter(value || undefined)
-  }, 200)
+    props.setGlobalFilter(value || undefined);
+  }, 200);
 
   return (
     <span>
       <TextField
         label="Search"
-        value={value || ""}
+        value={value || ''}
         fullWidth
         onChange={e => {
           setValue(e.target.value);
@@ -78,10 +86,14 @@ const GlobalFilter = (props: GlobalFilterType) => {
         }}
       />
     </span>
-  )
-}
+  );
+};
 
-const DataTable: React.FC<DataTableProps> = ({ projectsData, setClearance, setAverage  }) => {
+const DataTable: React.FC<DataTableProps> = ({
+  projectsData,
+  setClearance,
+  setAverage,
+}) => {
   const data = React.useMemo<UserData[]>(() => [...projectsData], []);
   const classes = useStyles();
 
@@ -114,24 +126,24 @@ const DataTable: React.FC<DataTableProps> = ({ projectsData, setClearance, setAv
     ],
     [],
   );
-  
+
   const filterTypes = React.useMemo(
     () => ({
       text: (rows: Row<UserData>[], id: number, filterValue: any) => {
         const filter = rows.filter(row => {
-          const rowValue = row.values[id]
+          const rowValue = row.values[id];
           return rowValue !== undefined
             ? String(rowValue)
                 .toLowerCase()
                 .startsWith(String(filterValue).toLowerCase())
-            : true
-        })
+            : true;
+        });
 
         return filter;
       },
     }),
-    []
-  )
+    [],
+  );
 
   const {
     getTableProps,
@@ -152,11 +164,10 @@ const DataTable: React.FC<DataTableProps> = ({ projectsData, setClearance, setAv
     useFilters,
     useGlobalFilter,
     useSortBy,
-  )
-
+  );
 
   useEffect(() => {
-    if(state.globalFilter){
+    if (state.globalFilter) {
       let countScore = 0;
       let countSuccessful = 0;
       rows.forEach((item, i) => {
@@ -164,20 +175,20 @@ const DataTable: React.FC<DataTableProps> = ({ projectsData, setClearance, setAv
           countSuccessful++;
         }
         countScore += item.values.score;
-      })
+      });
       setClearance(Math.round((countSuccessful / rows.length) * 100));
       setAverage(Math.round(countScore / rows.length));
     }
-  }, [state.globalFilter])
+  }, [state.globalFilter]);
 
   return (
-    <table
-      {...getTableProps()}
-      className={classes.table}
-    >
+    <table {...getTableProps()} className={classes.table}>
       <thead>
         {headerGroups.map(headerGroup => (
-          <tr className={classes.headlineRow} {...headerGroup.getHeaderGroupProps()}>
+          <tr
+            className={classes.headlineRow}
+            {...headerGroup.getHeaderGroupProps()}
+          >
             {headerGroup.headers.map(column => (
               <th
                 className={classes.headlineItem}
@@ -186,11 +197,7 @@ const DataTable: React.FC<DataTableProps> = ({ projectsData, setClearance, setAv
                 <Typography variant="h6">
                   {column.render('Header')}
                   <span>
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? '🔼'
-                        : '🔽'
-                      : ''}
+                    {column.isSorted ? (column.isSortedDesc ? '🔼' : '🔽') : ''}
                   </span>
                 </Typography>
               </th>
@@ -203,7 +210,7 @@ const DataTable: React.FC<DataTableProps> = ({ projectsData, setClearance, setAv
             style={{
               textAlign: 'left',
             }}
-            >
+          >
             <GlobalFilter
               preGlobalFilteredRows={preGlobalFilteredRows}
               globalFilter={state.globalFilter}
@@ -220,8 +227,8 @@ const DataTable: React.FC<DataTableProps> = ({ projectsData, setClearance, setAv
               {row.cells.map(cell => {
                 let redBackground = false;
                 let greenBackground = false;
-                if(cell.column.Header === 'Score') {
-                  if(cell.value > 90) {
+                if (cell.column.Header === 'Score') {
+                  if (cell.value > 90) {
                     greenBackground = true;
                   } else if (cell.value < 70) {
                     redBackground = true;
@@ -230,7 +237,9 @@ const DataTable: React.FC<DataTableProps> = ({ projectsData, setClearance, setAv
                 return (
                   <td
                     {...cell.getCellProps()}
-                    className={`${classes.cell} ${redBackground && classes.cellRed} ${greenBackground && classes.cellGreen}`}
+                    className={`${classes.cell} ${
+                      redBackground && classes.cellRed
+                    } ${greenBackground && classes.cellGreen}`}
                   >
                     <Typography className={classes.cellContent} variant="body2">
                       {cell.render('Cell')}

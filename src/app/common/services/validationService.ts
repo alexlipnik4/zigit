@@ -1,5 +1,5 @@
-import { EMAIL, PASSWORD } from "../../components/pages/Login/consts";
-import { LoginInfo } from "../../components/pages/Login/Login.model";
+import { EMAIL, PASSWORD } from '../../components/pages/Login/consts';
+import { LoginInfo } from '../../components/pages/Login/Login.model';
 
 type Rule = {
   inputName: string;
@@ -47,10 +47,7 @@ export class ValidationService {
         if (rule.inputName === key) {
           if (rule.required && inputData[key] === '') {
             errors.push({ inputName: key, message: errorMessages.required });
-          } else if (
-            rule.check &&
-            !rule.check.test((inputData[key] as string))
-          ) {
+          } else if (rule.check && !rule.check.test(inputData[key] as string)) {
             errors.push({ inputName: key, message: rule.message });
           }
         }
