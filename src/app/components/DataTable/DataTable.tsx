@@ -19,14 +19,6 @@ export type DataTableProps = {
   setAverage: (value: number) => void;
 };
 
-export interface Data {
-  title: string;
-  captured: string;
-  priority: string;
-  area: string;
-  isService: string;
-}
-
 const useStyles = makeStyles(theme => ({
   table: {
     marginTop: theme.spacing(2),
