@@ -1,11 +1,14 @@
 import React, { useMemo } from 'react';
-import { CellProps, Column, Row, useTable } from 'react-table';
+import { CellProps, Column, Row, useTable, useGlobalFilter, useAsyncDebounce, useFilters } from 'react-table';
 import { UserData } from '../pages/Info/Info';
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography } from '@material-ui/core';
+import { TextField, Typography } from '@material-ui/core';
+// import { matchSorter } from 'match-sorter';
 
 export type DataTableProps = {
   projectsData: UserData[];
+  setClearance: (value: number) => void;
+  setAverage: (value: number) => void;
 };
 
 export interface Data {
@@ -18,6 +21,7 @@ export interface Data {
 
 const useStyles = makeStyles(theme => ({
   table: {
+    marginTop: theme.spacing(2),
     width: '100%',
   },
   headlineRow: {
@@ -43,6 +47,39 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
   }
 }));
+
+type GlobalFilterType = {
+  preGlobalFilteredRows: Row<UserData>[];
+  globalFilter: any;
+  setGlobalFilter: any;
+}
+
+const GlobalFilter = (props: GlobalFilterType) => {
+  const count = props.preGlobalFilteredRows.length
+  const [value, setValue] = React.useState(props.globalFilter)
+  const onChange = useAsyncDebounce(value => {
+    props.setGlobalFilter(value || undefined)
+  }, 200)
+
+  return (
+    <span>
+      <TextField
+        label="Search"
+        value={value || ""}
+        fullWidth
+        onChange={e => {
+          setValue(e.target.value);
+          onChange(e.target.value);
+        }}
+        placeholder={`${count} records...`}
+        style={{
+          fontSize: '1.1rem',
+          border: '0',
+        }}
+      />
+    </span>
+  )
+}
 
 const DataTable: React.FC<DataTableProps> = ({ projectsData }) => {
   const data = React.useMemo<UserData[]>(() => [...projectsData], []);
@@ -77,8 +114,22 @@ const DataTable: React.FC<DataTableProps> = ({ projectsData }) => {
     ],
     [],
   );
-
-  const tableInstance = useTable({ columns, data });
+  
+  const filterTypes = React.useMemo(
+    () => ({
+      text: (rows: Row<UserData>[], id: number, filterValue: any) => {
+        return rows.filter(row => {
+          const rowValue = row.values[id]
+          return rowValue !== undefined
+            ? String(rowValue)
+                .toLowerCase()
+                .startsWith(String(filterValue).toLowerCase())
+            : true
+        })
+      },
+    }),
+    []
+  )
 
   const {
     getTableProps,
@@ -86,7 +137,19 @@ const DataTable: React.FC<DataTableProps> = ({ projectsData }) => {
     headerGroups,
     rows,
     prepareRow,
-  } = tableInstance;
+    state,
+    visibleColumns,
+    preGlobalFilteredRows,
+    setGlobalFilter,
+  } = useTable(
+    {
+      columns,
+      data,
+      filterTypes,
+    },
+    useFilters,
+    useGlobalFilter
+  )
 
   return (
     <table
@@ -108,6 +171,20 @@ const DataTable: React.FC<DataTableProps> = ({ projectsData }) => {
             ))}
           </tr>
         ))}
+        <tr>
+          <th
+            colSpan={visibleColumns.length}
+            style={{
+              textAlign: 'left',
+            }}
+            >
+            <GlobalFilter
+              preGlobalFilteredRows={preGlobalFilteredRows}
+              globalFilter={state.globalFilter}
+              setGlobalFilter={setGlobalFilter}
+            />
+          </th>
+        </tr>
       </thead>
       <tbody {...getTableBodyProps()}>
         {rows.map(row => {
